@@ -1,1 +1,1 @@
-# rgb-logic
+#[ModKit Wiki](../../wiki)
