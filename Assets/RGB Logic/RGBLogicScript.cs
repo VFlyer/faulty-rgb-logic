@@ -36,9 +36,10 @@ public class RGBLogicScript : MonoBehaviour {
         cb = cbmode.ColorblindModeActive;
         module.OnNeedyActivation = Activate;
         module.OnTimerExpired = Deactivate;
-        foreach (KMSelectable button in buttons)
+        for (int i = 0; i < buttons.Length; i++)
         {
-            int b = Array.IndexOf(buttons, button);
+            KMSelectable button = buttons[i];
+            int b = i;
             button.OnInteract += delegate () { if (active && !pressed[b]) Press(b); return false; };
         }
     }
@@ -191,11 +192,12 @@ public class RGBLogicScript : MonoBehaviour {
     {
         if (command.ToLowerInvariant() == "cb")
         {
+            yield return null;
             cb = true;
+            if (active)
             for (int i = 0; i < 2; i++)
                 for (int j = 0; j < 16; j++)
                     cblabels[(16 * i) + j].text = "KBGCRMYW"[cellcols[i][j]].ToString();
-            yield return null;
             yield break;
         }
         if (active)

@@ -44,6 +44,15 @@ public class KMNeedyModuleEditor : Editor
             EditorGUILayout.PropertyField(moduleDisplayNameProperty);
             moduleDisplayNameProperty.stringValue = moduleDisplayNameProperty.stringValue.Trim();
 
+            var resetDelayMinProperty = serializedObject.FindProperty("ResetDelayMin");
+            EditorGUILayout.PropertyField(resetDelayMinProperty);
+            resetDelayMinProperty.floatValue = Mathf.Max(resetDelayMinProperty.floatValue, 0f);
+
+            var resetDelayMaxProperty = serializedObject.FindProperty("ResetDelayMax");
+            EditorGUILayout.PropertyField(resetDelayMaxProperty);
+            resetDelayMaxProperty.floatValue = Mathf.Max(resetDelayMaxProperty.floatValue, resetDelayMinProperty.floatValue);
+
+
             EditorGUILayout.PropertyField(serializedObject.FindProperty("RequiresTimerVisibility"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("WarnAtFiveSeconds"));
 
