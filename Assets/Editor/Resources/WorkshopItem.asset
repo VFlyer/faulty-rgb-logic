@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Name: WorkshopItem
   m_EditorClassIdentifier: 
   WorkshopPublishedFileID: 0
-  Title: RGB Logic
-  Tags: []
+  Title: Malfunctioning RGB Logic
+  Tags:
+  - Needy Module
