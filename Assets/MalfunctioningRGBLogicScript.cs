@@ -59,6 +59,7 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 		if (!pressedCells[idx])
         {
 			pressedCells[idx] = true;
+			gridSelectable[idx].AddInteractionPunch(0.5f);
 			if (!expectedCells[idx])
 			{
 				mAudio.PlaySoundAtTransform("BlipSelectBad", transform);
@@ -215,6 +216,7 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 		for (var x = 0; x < 4; x++)
 			QuickLog(expectedCells.Skip(4 * x).Take(4).Select(a => a ? "O" : "X").Join());
 		needyActive = true;
+		alreadyStruck = false;
 		foreach (var handler in squareFlashers)
 			StartCoroutine(handler);
         StartCoroutine(HandleTimedActivation());
@@ -282,7 +284,19 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			QuickLog("Following cells were missed upon deactivation: {0}", missedCellIdxes.Select(a => "ABCD"[a % 4].ToString() + (a / 4 + 1).ToString()).Join(", "));
 			if (!alreadyStruck)
 				needyHandler.HandleStrike();
+			StartCoroutine(FlashCenterMissed(missedCellIdxes));
 		}
+	}
+	IEnumerator FlashCenterMissed(IEnumerable<int> idxMissed)
+    {
+		for (float t = 0; t < 1f; t += Time.deltaTime)
+        {
+			foreach (var idx in idxMissed)
+				centerGridRends[idx].material.color = Color.Lerp(Color.black, expectedInverted ? Color.red : Color.white, 1f - Mathf.Abs(2 * (t - 0.5f)));
+			yield return null;
+        }
+		foreach (var idx in idxMissed)
+			centerGridRends[idx].material.color = Color.black;
 	}
 	IEnumerator FlashSquareWhileActive(MeshRenderer affectedRenderer, IEnumerable<Color> possibleColors, float flashDelay = 0.33f, float initialDelay = 0f, bool deducted = false, TextMesh cbTextRelevant = null)
     {
