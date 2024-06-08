@@ -17,8 +17,9 @@ MonoBehaviour:
   description: "\u201CDon't sit on it, don't sit on it, don't sit on it!\u201D *module
     cracks*\n\nA twisted version of RGB Logic, with less deterministic cells, more
     logical inverts, and shifted expressions.\n\nVariant by VFlyer\nOriginal Version
-    by Speakingevil\nWant the original version instead? Subscribe to RGB Logic here:
-    \ [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737] https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737[/url]"
+    and Model by Speakingevil\nWant the original version instead? Subscribe to RGB
+    Logic here:  [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737]
+    https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737[/url]"
   version: 1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 456e422aa4864cb4b93bb15937c50ebb, type: 3}

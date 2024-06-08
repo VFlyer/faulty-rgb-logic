@@ -64,7 +64,10 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			{
 				mAudio.PlaySoundAtTransform("BlipSelectBad", transform);
 				QuickLog("{0}{1} was not safe.", "ABCD"[idx % 4].ToString(), idx / 4 + 1);
-				needyHandler.HandleStrike();
+				if (!alreadyStruck)
+					needyHandler.HandleStrike();
+				else
+					mAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
 				alreadyStruck = true;
 			}
 			else
@@ -284,6 +287,8 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			QuickLog("Following cells were missed upon deactivation: {0}", missedCellIdxes.Select(a => "ABCD"[a % 4].ToString() + (a / 4 + 1).ToString()).Join(", "));
 			if (!alreadyStruck)
 				needyHandler.HandleStrike();
+			else
+				mAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
 			StartCoroutine(FlashCenterMissed(missedCellIdxes));
 		}
 	}
