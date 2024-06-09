@@ -77,14 +77,14 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
     }
 
 	void HandleNeedyActivation()
-    {
+	{
 		if (needySolved)
-        {
+		{
 			needyHandler.HandlePass();
 			return;
-        }
+		}
 		var attemptCnt = 1;
-		retryExpected:
+	retryExpected:
 		expectedCells = new bool[amountSquares];
 		pressedCells = new bool[amountSquares];
 		colorIdxLeftGrid = new int[amountSquares];
@@ -93,7 +93,7 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 		var leftGridDeductableCells = Enumerable.Repeat(true, amountSquares).ToArray();
 		var rightGridDeductableCells = Enumerable.Repeat(true, amountSquares).ToArray();
 		for (var x = 0; x < amountSquares; x++)
-        {
+		{
 			leftGridDeductableCells[x] ^= Random.value < chanceUndeductable;
 			colorIdxLeftGrid[x] = leftGridDeductableCells[x] ? Random.Range(0, 8) : 8;
 			rightGridDeductableCells[x] ^= Random.value < chanceUndeductable;
@@ -108,8 +108,8 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 		var invertOutput = Random.value < 0.5f;
 		expectedInverted = Random.value < chanceInvertExpected;
 		var deductedTiles = new bool[amountSquares];
-        for (var x = 0; x < amountSquares; x++)
-        {
+		for (var x = 0; x < amountSquares; x++)
+		{
 			var stateLeft = (colorIdxLeftGrid[x] >> chnUseLeft) % 2 == 1;
 			var stateRight = (colorIdxRightGrid[x] >> chnUseRight) % 2 == 1;
 
@@ -118,7 +118,7 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 				deductedTiles[x] = true;
 				expectedCells[x] = (flipVariables ? ApplyOperation(stateRight ^ invertLeft, stateLeft ^ invertRight, idxOperatorUsed) :
 					ApplyOperation(stateLeft ^ invertLeft, stateRight ^ invertRight, idxOperatorUsed)) ^ invertOutput;
-            }
+			}
 			else if (leftGridDeductableCells[x])
 			{
 				var resultsDistinct = new[] { true, false }.Select(a => (flipVariables ? ApplyOperation(a ^ invertLeft, stateLeft ^ invertRight, idxOperatorUsed) :
@@ -130,7 +130,7 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 				}
 			}
 			else if (rightGridDeductableCells[x])
-            {
+			{
 				var resultsDistinct = new[] { true, false }.Select(a => (flipVariables ? ApplyOperation(stateRight ^ invertLeft, a ^ invertRight, idxOperatorUsed) :
 					ApplyOperation(a ^ invertLeft, stateRight ^ invertRight, idxOperatorUsed)) ^ invertOutput).Distinct();
 				if (resultsDistinct.Count() == 1)
@@ -149,25 +149,25 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			goto retryExpected;
 		}
 		var initialExpression = invertOutput
-            ? string.Format("!({0}{1}{2}{3}{4})",
-                invertLeft ? "!" : "",
-                (flipVariables ? channelAbbrev[chnUseRight] : channelAbbrev.ToLower()[chnUseLeft]).ToString(),
-                operSymbols[idxOperatorUsed],
-                invertRight ? "!" : "",
-                (flipVariables ? channelAbbrev.ToLower()[chnUseLeft] : channelAbbrev[chnUseRight]).ToString())
-            : string.Format("{0}{1}{2}{3}{4}",
-                invertLeft ? "!" : "",
-                (flipVariables ? channelAbbrev[chnUseRight] : channelAbbrev.ToLower()[chnUseLeft]).ToString(),
-                operSymbols[idxOperatorUsed],
-                invertRight ? "!" : "",
-                (flipVariables ? channelAbbrev.ToLower()[chnUseLeft] : channelAbbrev[chnUseRight]).ToString());
+			? string.Format("!({0}{1}{2}{3}{4})",
+				invertLeft ? "!" : "",
+				(flipVariables ? channelAbbrev[chnUseRight] : channelAbbrev.ToLower()[chnUseLeft]).ToString(),
+				operSymbols[idxOperatorUsed],
+				invertRight ? "!" : "",
+				(flipVariables ? channelAbbrev.ToLower()[chnUseLeft] : channelAbbrev[chnUseRight]).ToString())
+			: string.Format("{0}{1}{2}{3}{4}",
+				invertLeft ? "!" : "",
+				(flipVariables ? channelAbbrev[chnUseRight] : channelAbbrev.ToLower()[chnUseLeft]).ToString(),
+				operSymbols[idxOperatorUsed],
+				invertRight ? "!" : "",
+				(flipVariables ? channelAbbrev.ToLower()[chnUseLeft] : channelAbbrev[chnUseRight]).ToString());
 		centerText.color = expectedInverted ? Color.red : Color.white;
 		var shiftExpression = Random.value < 0.2f ? 0 : Random.Range(1, initialExpression.Length);
 		centerText.text = initialExpression.Skip(shiftExpression).Concat(initialExpression.Take(shiftExpression)).Join("");
 		glitchedLeft = new bool[amountSquares];
 		glitchedRight = new bool[amountSquares];
 		for (var x = 0; x < amountSquares; x++)
-        {
+		{
 			var y = x;
 			if (!leftGridDeductableCells[x])
 			{
@@ -220,6 +220,11 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			QuickLog(expectedCells.Skip(4 * x).Take(4).Select(a => a ? "O" : "X").Join());
 		needyActive = true;
 		alreadyStruck = false;
+		for (var x = 0; x < amountSquares; x++)
+        {
+			cbLeftText[x].text = !colorblind || glitchedLeft[x] ? "" : colorNameAbbrev[colorIdxLeftGrid[x]].ToString();
+			cbRightText[x].text = !colorblind || glitchedRight[x] ? "" : colorNameAbbrev[colorIdxRightGrid[x]].ToString();
+        }
 		foreach (var handler in squareFlashers)
 			StartCoroutine(handler);
         StartCoroutine(HandleTimedActivation());
@@ -412,6 +417,10 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			{
 				yield return null;
 				gridSelectable[indices[i]].OnInteract();
+				if (expectedCells[indices[i]])
+					yield return new WaitForSeconds(0.1f);
+				else
+					yield break;
 			}
 		}
 		else

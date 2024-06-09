@@ -20,6 +20,6 @@ MonoBehaviour:
     and Model by Speakingevil\nWant the original version instead? Subscribe to RGB
     Logic here:  [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737]
     https://steamcommunity.com/sharedfiles/filedetails/?id=2124451737[/url]"
-  version: 1.0
+  version: 1.0.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 456e422aa4864cb4b93bb15937c50ebb, type: 3}
