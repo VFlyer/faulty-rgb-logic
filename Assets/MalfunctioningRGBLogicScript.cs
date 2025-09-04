@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KModkit;
 
 public class MalfunctioningRGBLogicScript : MonoBehaviour {
 
@@ -429,4 +430,22 @@ public class MalfunctioningRGBLogicScript : MonoBehaviour {
 			yield break;
 		}
 	}
+	IEnumerator HandleForceDeactivation()
+    {
+        while (Enumerable.Range(0, 16).Any(a => !pressedCells[a] && expectedCells[a]))
+        {
+			var idxNotCorrectlyPressed = Enumerable.Range(0, 16).Where(a => !pressedCells[a] && expectedCells[a]).ToList();
+			foreach (var idx in idxNotCorrectlyPressed)
+            {
+				gridSelectable[idx].OnInteract();
+				yield return new WaitForSeconds(0.1f);
+            }
+
+		}
+    }
+	void TwitchHandleForcedSolve()
+    {
+		KMNeedyModuleExtensions.SetResetDelayTime(needyHandler, float.MaxValue, float.MaxValue);
+		StartCoroutine(HandleForceDeactivation());
+    }
 }
